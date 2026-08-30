@@ -1,0 +1,16 @@
+{
+  "name": "Perfect Love, Imperfect Relationships — Self-Quiz",
+  "short_name": "Welwood Quiz",
+  "description": "Self-quiz for John Welwood's Perfect Love, Imperfect Relationships",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4EDE0",
+  "theme_color": "#BE8724",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
