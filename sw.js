@@ -1,4 +1,4 @@
-const CACHE = "welwood-quiz-v4";
+const CACHE = "welwood-quiz-v5";
 const ASSETS = [
   "./",
   "./index.html",

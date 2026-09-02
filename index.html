@@ -2398,8 +2398,11 @@ function sunrule() { return '<div class="sunrule"><i></i></div>'; }
 /* ===================================================================
    Screen: Home
    =================================================================== */
-function renderHome() {
+function renderHome(state) {
   RUN = null;
+  /* renderHome is also used directly as a click handler, so `state` may be an
+     Event — only the exact string arms the confirm. */
+  const confirmingReset = state === "confirmReset";
   setBar({ back: false, progress: 0 });
   const due = dueSections();
   const overdueOrNow = due.filter(d => d.rel.kind === "over" || d.rel.kind === "now");
@@ -2479,7 +2482,11 @@ function renderHome() {
       "Items answered correctly on a prior visit return in a harder form. Progress is stored on this device" +
       (Store.isFallback() ? " (in memory only for this session \u2014 persistent storage is unavailable here)" : "") +
       ".</p>" +
-    '<p class="footnote"><button class="linklike" id="resetAll">Reset all progress</button></p>';
+    (confirmingReset
+      ? '<p class="footnote">This clears every section\u2019s history, due dates, and the missed-question pool. It can\u2019t be undone. ' +
+        '<button class="linklike" id="resetYes">Reset everything</button> &nbsp;\u00b7&nbsp; ' +
+        '<button class="linklike" id="resetNo">Cancel</button></p>'
+      : '<p class="footnote"><button class="linklike" id="resetAll">Reset all progress</button></p>');
 
   const mixBtn = document.getElementById("startMixed");
   if (mixBtn) mixBtn.addEventListener("click", () => {
@@ -2493,14 +2500,18 @@ function renderHome() {
       else { startRun("section", id); renderRecall(); }
     });
   });
+  /* Inline two-click confirm — native confirm() is blocked without notice in
+     sandboxed frames, which would make this control silently do nothing. */
   const resetBtn = document.getElementById("resetAll");
-  if (resetBtn) resetBtn.addEventListener("click", () => {
-    if (window.confirm("Reset all progress? This clears every section's history, due dates, and the missed-question pool. This can't be undone.")) {
-      STATE = blankState();
-      Store.save(STATE);
-      renderHome();
-    }
+  if (resetBtn) resetBtn.addEventListener("click", () => renderHome("confirmReset"));
+  const resetYes = document.getElementById("resetYes");
+  if (resetYes) resetYes.addEventListener("click", () => {
+    STATE = blankState();
+    Store.save(STATE);
+    renderHome();
   });
+  const resetNo = document.getElementById("resetNo");
+  if (resetNo) resetNo.addEventListener("click", () => renderHome());
   window.scrollTo(0, 0);
 }
 
